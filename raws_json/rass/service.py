@@ -48,7 +48,7 @@ class RassService(RawsService):
     # ITEM METHODS
     # -----------
 
-    def createItem(self, dirpath, filename, local_path, force_create = False):
+    def createItem(self, dirpath, filename, local_path, force_create = True):
         """ Creates a new RASS item resource by uploading a file (= a file on the CDN). 
 
             @param string dirpath : path to the directory (on the rambla CDN) in which the item needs to be created.
@@ -151,4 +151,39 @@ class RassService(RawsService):
             query.feed = uri
             uri = query.ToUri()
         return self.delete(uri)
+        
+    # META METHODS
+    # -----------
+
+    def get_meta_info(self, path, query = None):
+        """ Sends a GET meta request with the given path.
+        
+            @param string Relative path to a file or directory (pass "/" for root-directory) on the CDN
+            @return single meta object
+        """
+        uri = "/meta/" + self.username + "/" + path.lstrip("/")
+        if query:
+            query.feed = uri
+            uri = query.ToUri()
+        return self.Get(uri = uri)
+    
+    def get_file_info(self, path, query = None):
+        """ Sends a GET meta request for the file identified on the CDN by path.
+        
+            @param string Relative path to the file on the CDN
+            @return single meta object
+        """
+        return self.get_meta_info(path, query)
+
+    def get_dir_info(self, path, query = None):
+        """ Sends a GET meta request for the directory identified on the CDN by path.
+
+            @param string Relative path to the directory on the CDN
+            @return a list (feed) of meta objects
+        """
+        return self.get_meta_info(path, query)
+        
+
+
+        
 
